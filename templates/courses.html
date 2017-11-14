@@ -1,0 +1,53 @@
+{%extends "home.html"%}
+{% block title %}Courses{% endblock %}
+{% block head%}
+  {{ super() }}
+{% endblock%}
+{% block page_content %}
+<div class="container">
+ <h1 class="mt-5"> <i  aria-hidden="true"></i> Browse Courses:</h1>
+ <ul>
+       {% for course in courses %}
+       <!-- Button trigger modal -->
+
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><li>{{course}}</li></button>
+
+       {% endfor%}
+       {% if course == MISY350 %}
+       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Course Info</h5>
+               <div class="modal-body">
+                 Are you sure you want to save?
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+
+
+       { %else if course == ACCT315 %}
+       <div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" >Course Info</h5>
+               <div class="modal-body">
+                 Are you sure you want to saeeve?
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+
+
+    {%endif%}
+
+
+   </ul>
+
+ </div>
+  {% endblock %}
