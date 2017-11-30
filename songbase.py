@@ -12,8 +12,8 @@ db = SQLAlchemy(app)
 
 
 # define database tables
-class Artist(db.Model):
-    __tablename__ = 'artists'
+class Professor(db.Model):
+    __tablename__ = 'professor'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     about = db.Column(db.Text)
@@ -26,7 +26,7 @@ class Song(db.Model):
     name = db.Column(db.String(256))
     year = db.Column(db.Integer)
     lyrics = db.Column(db.Text)
-    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
+    artist_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
 
 
 @app.route('/')
@@ -36,13 +36,13 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/artists')
+@app.route('/professors')
 def show_all_artists():
-    artists = Artist.query.all()
-    return render_template('artist-all.html', artists=artists)
+    professors = Professor.query.all()
+    return render_template('artist-all.html', professors=professors)
 
 
-@app.route('/artist/add', methods=['GET', 'POST'])
+@app.route('/professor/add', methods=['GET', 'POST'])
 def add_artists():
     if request.method == 'GET':
         return render_template('artist-add.html')
@@ -52,60 +52,25 @@ def add_artists():
         about = request.form['about']
 
         # insert the data into the database
-        artist = Artist(name=name, about=about)
-        db.session.add(artist)
+        professor = Professor(name=name, about=about)
+        db.session.add(professor)
         db.session.commit()
         return redirect(url_for('show_all_artists'))
 
 
-@app.route('/api/artist/add', methods=['POST'])
-def add_ajax_artists():
-    # get data from the form
-    name = request.form['name']
-    about = request.form['about']
 
-    # insert the data into the database
-    artist = Artist(name=name, about=about)
-    db.session.add(artist)
-    db.session.commit()
-    # flash message type: success, info, warning, and danger from bootstrap
-    flash('Artist Inserted', 'success')
-    return jsonify({"id": str(artist.id), "name": artist.name})
-
-
-@app.route('/artist/edit/<int:id>', methods=['GET', 'POST'])
+@app.route('/professor/edit/<int:id>', methods=['GET', 'POST'])
 def edit_artist(id):
-    artist = Artist.query.filter_by(id=id).first()
+    professor = Professor.query.filter_by(id=id).first()
     if request.method == 'GET':
-        return render_template('artist-edit.html', artist=artist)
+        return render_template('artist-edit.html', professor=professor)
     if request.method == 'POST':
         # update data based on the form data
-        artist.name = request.form['name']
-        artist.about = request.form['about']
+        professor.name = request.form['name']
+        professor.about = request.form['about']
         # update the database
         db.session.commit()
         return redirect(url_for('show_all_artists'))
-
-
-@app.route('/artist/delete/<int:id>', methods=['GET', 'POST'])
-def delete_artist(id):
-    artist = Artist.query.filter_by(id=id).first()
-    if request.method == 'GET':
-        return render_template('artist-delete.html', artist=artist)
-    if request.method == 'POST':
-        # delete the artist by id
-        # all related songs are deleted as well
-        db.session.delete(artist)
-        db.session.commit()
-        return redirect(url_for('show_all_artists'))
-
-
-@app.route('/api/artist/<int:id>', methods=['DELETE'])
-def delete_ajax_artist(id):
-    artist = Artist.query.get_or_404(id)
-    db.session.delete(artist)
-    db.session.commit()
-    return jsonify({"id": str(artist.id), "name": artist.name})
 
 
 # song-all.html adds song id to the edit button using a hidden input
@@ -154,26 +119,7 @@ def edit_song(id):
         return redirect(url_for('show_all_songs'))
 
 
-@app.route('/song/delete/<int:id>', methods=['GET', 'POST'])
-def delete_song(id):
-    song = Song.query.filter_by(id=id).first()
-    artists = Artist.query.all()
-    if request.method == 'GET':
-        return render_template('song-delete.html', song=song, artists=artists)
-    if request.method == 'POST':
-        # use the id to delete the song
-        # song.query.filter_by(id=id).delete()
-        db.session.delete(song)
-        db.session.commit()
-        return redirect(url_for('show_all_songs'))
 
-
-@app.route('/api/song/<int:id>', methods=['DELETE'])
-def delete_ajax_song(id):
-    song = Song.query.get_or_404(id)
-    db.session.delete(song)
-    db.session.commit()
-    return jsonify({"id": str(song.id), "name": song.name})
 
 
 @app.route('/about')
@@ -186,32 +132,13 @@ def show_all_users():
     return render_template('user-all.html')
 
 
-@app.route('/form-demo', methods=['GET', 'POST'])
-def form_demo():
-    # how to get form data is different for GET vs. POST
-    if request.method == 'GET':
-        first_name = request.args.get('first_name')
-        if first_name:
-            return render_template('form-demo.html', first_name=first_name)
-        else:
-            return render_template('form-demo.html', first_name=session.get('first_name'))
-    if request.method == 'POST':
-        session['first_name'] = request.form['first_name']
-        # return render_template('form-demo.html', first_name=first_name)
-        return redirect(url_for('form_demo'))
-
-
-@app.route('/user/<string:name>/')
-def get_user_name(name):
-    # return "hello " + name
-    # return "Hello %s, this is %s" % (name, 'administrator')
-    return render_template('user.html', name=name)
 
 
 @app.route('/song/<int:id>/')
 def get_song_id(id):
     # return "This song's ID is " + str(id)
     return "Hi, this is %s and the song's id is %d" % ('administrator', id)
+
 
 
 # https://goo.gl/Pc39w8 explains the following line
