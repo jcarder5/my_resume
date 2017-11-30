@@ -1,14 +1,14 @@
 {% extends "home-base.html"%}
-{% block title %}Add Courses{% endblock %}
+{% block title %}Edit Song{% endblock %}
 {% block page_content%}
 
   <!-- Page Content -->
   <div class="container">
-    <h1 class="mt-5"><i class="fa fa-music" aria-hidden="true"></i> Add Courses:</h1>
-    <form action="/song/add" method="post">
+    <h1 class="mt-5"><i class="fa fa-music" aria-hidden="true"></i> Edit Course:</h1>
+    <form action="/course/edit/{{course.id}}" method="post">
       <div class="form-group">
-        <label>Course</label>
-        <input class="form-control" type="text" name="course"  required="true">
+        <label>Name</label>
+        <input class="form-control" type="text" name="name" value="{{course.name}}" required="true">
       </div>
       <div class="form-group">
         <label>Number</label>
@@ -20,8 +20,8 @@
         <label>Description</label>
         <textarea class="form-control" name="description"  required="true"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">Add Course</button>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
   </div>
 
-{%endblock%}
+{% endblock%}

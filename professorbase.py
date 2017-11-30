@@ -16,17 +16,17 @@ class Professor(db.Model):
     __tablename__ = 'professor'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-    about = db.Column(db.Text)
-    songs = db.relationship('Song', backref='artist', cascade="delete")
+    department = db.Column(db.Text)
 
 
-class Song(db.Model):
-    __tablename__ = 'songs'
+
+class Course(db.Model):
+    __tablename__ = 'courses'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256))
-    year = db.Column(db.Integer)
-    lyrics = db.Column(db.Text)
-    artist_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
+    number = db.Column(db.Integer)
+    description = db.Column(db.Text)
+
 
 
 @app.route('/')
@@ -37,107 +37,88 @@ def index():
 
 
 @app.route('/professors')
-def show_all_artists():
+def show_all_professors():
     professors = Professor.query.all()
-    return render_template('artist-all.html', professors=professors)
+    return render_template('professor-all.html', professors=professors)
 
 
 @app.route('/professor/add', methods=['GET', 'POST'])
-def add_artists():
+def add_professor():
     if request.method == 'GET':
-        return render_template('artist-add.html')
+        return render_template('professor-add.html')
     if request.method == 'POST':
         # get data from the form
         name = request.form['name']
-        about = request.form['about']
+        about = request.form['department']
 
         # insert the data into the database
-        professor = Professor(name=name, about=about)
+        professor = Professor(name=name, department=department)
         db.session.add(professor)
         db.session.commit()
-        return redirect(url_for('show_all_artists'))
+        return redirect(url_for('show_all_professors'))
 
 
 
 @app.route('/professor/edit/<int:id>', methods=['GET', 'POST'])
-def edit_artist(id):
+def edit_professor(id):
     professor = Professor.query.filter_by(id=id).first()
     if request.method == 'GET':
-        return render_template('artist-edit.html', professor=professor)
+        return render_template('professor-edit.html', professor=professor)
     if request.method == 'POST':
         # update data based on the form data
         professor.name = request.form['name']
-        professor.about = request.form['about']
+        professor.about = request.form['department']
         # update the database
         db.session.commit()
-        return redirect(url_for('show_all_artists'))
+        return redirect(url_for('show_all_professor'))
 
 
 # song-all.html adds song id to the edit button using a hidden input
-@app.route('/songs')
-def show_all_songs():
-    songs = Song.query.all()
-    return render_template('song-all.html', songs=songs)
+@app.route('/courses')
+def show_all_courses():
+    courses = Course.query.all()
+    return render_template('course-all.html', courses=courses)
 
 
-@app.route('/song/add', methods=['GET', 'POST'])
-def add_songs():
+@app.route('/course/add', methods=['GET', 'POST'])
+def add_courses():
     if request.method == 'GET':
-        artists = Artist.query.all()
-        return render_template('song-add.html', artists=artists)
+        professors = Professor.query.all()
+        return render_template('course-add.html', professors=professors)
     if request.method == 'POST':
         # get data from the form
         name = request.form['name']
         year = request.form['year']
         lyrics = request.form['lyrics']
-        artist_name = request.form['artist']
-        artist = Artist.query.filter_by(name=artist_name).first()
-        song = Song(name=name, year=year, lyrics=lyrics, artist=artist)
+        course = Course(name=name, number=number, description=description)
 
         # insert the data into the database
-        db.session.add(song)
+        db.session.add(course)
         db.session.commit()
-        return redirect(url_for('show_all_songs'))
+        return redirect(url_for('show_all_courses'))
 
 
-@app.route('/song/edit/<int:id>', methods=['GET', 'POST'])
-def edit_song(id):
-    song = Song.query.filter_by(id=id).first()
-    artists = Artist.query.all()
+@app.route('/course/edit/<int:id>', methods=['GET', 'POST'])
+def edit_course(id):
+    course = Course.query.filter_by(id=id).first()
+
     if request.method == 'GET':
-        return render_template('song-edit.html', song=song, artists=artists)
+        return render_template('course-edit.html', course=course)
     if request.method == 'POST':
         # update data based on the form data
-        song.name = request.form['name']
-        song.year = request.form['year']
-        song.lyrics = request.form['lyrics']
-        artist_name = request.form['artist']
-        artist = Artist.query.filter_by(name=artist_name).first()
-        song.artist = artist
+        course.name = request.form['name']
+        course.year = request.form['number']
+        course.lyrics = request.form['description']
+
         # update the database
         db.session.commit()
-        return redirect(url_for('show_all_songs'))
+        return redirect(url_for('show_all_courses'))
 
 
 
 
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
 
-
-@app.route('/users')
-def show_all_users():
-    return render_template('user-all.html')
-
-
-
-
-@app.route('/song/<int:id>/')
-def get_song_id(id):
-    # return "This song's ID is " + str(id)
-    return "Hi, this is %s and the song's id is %d" % ('administrator', id)
 
 
 
