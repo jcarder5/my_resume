@@ -1,0 +1,24 @@
+{% extends "home-base.html"%}
+{% block title %}Edit Professor{% endblock %}
+{% block page_content%}
+
+<div class="container">
+  <h1 class="mt-5"><i  aria-hidden="true"></i> Delete Course:</h1>
+  <form action="/course/delete/{{course.id}}" method="post">
+    <div class="form-group">
+      <label>Name</label>
+      <input class="form-control" type="text" name="name" value="{{course.name}}" required="true" readonly="true">
+    </div>
+    <div class="form-group">
+      <label>Number</label>
+      <textarea class="form-control" name="about" required="true" readonly="true">{{course.description}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control" name="about" required="true" readonly="true">{{course.description}}</textarea>
+    </div>
+    <button type="submit" class="btn btn-danger" id="delete_btn">Delete</button>
+  </form>
+</div>
+
+{% endblock%}
